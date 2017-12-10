@@ -1,25 +1,57 @@
-//for performing HTTP requests
-var axios = require("axios");
+import axios from "axios";
+const authKey = "a9070cfb9c174d11afdda82d81f12d75";
 
-// for making API Calls
-var helper = {
 
-// for running the query to geolocate.
-  runQuery: function(location) {
+const helpers = {
+  runQuery: (searchTerm) => {
+    console.log("We have a search term passed into query: " + searchTerm);
+    const queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=" + authKey + "&q=" + searchTerm;
+    return axios.get(queryURL).then((response) => {
+      console.log(response);
 
-    console.log(location);
+      if(response.data.response.docs[0]) {
+      	return response.data.response.docs;
+      } else {
+      	return "";
+      }
+    });
   },
 
-  // for retrieving the record of query results
-  getArticles: function() {
-    return axios.get("/api");
+  getSaved: () => {
+  	return axios.get("/api/saved");
   },
 
-  // for saving an article to our database.
-  postArticle: function(location) {
-    return axios.post("/api", { location: location });
+  saveArticle: (articleTitle, articleDate, articleURL) => {
+
+  	console.log("We have an article title to save in helper code: " + articleTitle);
+  	console.log("We have an article date to save in helper code: " + articleDate);
+
+  	return axios.post("/api/saved",
+  		{
+  			title: articleTitle,
+  			date: articleDate,
+        url: articleURL
+  		}
+  	);
+  },
+
+
+  deleteArticle: (articleID) => {
+
+  	console.log("We have an article to delete in helper: " + articleID);
+
+  	return axios.delete("/api/saved/" + articleID)
+
+  	.then(res =>  {
+  		console.log("Delete response from axios: " + res);
+  	})
+  	.catch(err => {
+  		console.log("Error pushing to delete: " + err);
+  	});
+
   }
-};
 
-// for exporting the API helper
-module.exports = helper
+};
+// Export the helpers function.
+export default helpers;
+
