@@ -21,7 +21,7 @@ app.use(express.static("./public"));
 
 mongoose.Promise = global.Promise;
 // Connect to the Mongo DB
-const local_db = "mongodb://localhost/reactscrapenyt"
+const local_db = "mongodb://localhost/reactNYT"
 
 mongoose.connect(
   process.env.MONGODB_URI || mongodb://dcnyt:dyaryo@ds133746.mlab.com:33746/scrapenyt
